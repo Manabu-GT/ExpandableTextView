@@ -7,6 +7,10 @@ Feel free to use it all you want in your Android apps provided that you cite thi
 
 <img src="https://raw.github.com/Manabu-GT/ExpandableTextView/master/art/readme_demo.gif" width=346 height=588 alt="Quick Demo">
 
+Requirements
+-------------
+API Level 8 (Froyo) and above.
+
 Setup
 ------
 You just need to add the followings to your ***build.gradle*** file:
