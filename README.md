@@ -1,6 +1,17 @@
-# ExpandableTextView
+ExpandableTextView
+===================
 
-## License
+ExpandableTextView is an Android library that allows developers to easily create an TextView
+which can expand/collapse just like the Google Play's app description.
+Feel free to use it all you want in your Android apps provided that you cite this project.
+
+![Quick Demo][1]
+
+Setup
+------
+
+License
+--------
 
 ```
  Copyright 2014 Manabu Shimobe
@@ -17,3 +28,5 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 ```
+
+[1]: https://raw.github.com/Manabu-GT/ExpandableTextView/master/art/readme_demo.gif
