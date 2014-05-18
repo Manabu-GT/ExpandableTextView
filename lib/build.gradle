@@ -1,4 +1,5 @@
 apply plugin: 'android-library'
+apply plugin: 'maven'
 
 android {
     compileSdkVersion 19
@@ -7,8 +8,6 @@ android {
     defaultConfig {
         minSdkVersion 8
         targetSdkVersion 19
-        versionCode 1
-        versionName "1.0"
     }
     buildTypes {
         release {
@@ -20,5 +19,22 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:19.+'
+}
+
+def repositoryUrl
+if (has('repoDir')) {
+    repositoryUrl = "file://$repoDir/mvn-repo/"
+} else {
+    repositoryUrl = "file://$buildDir/mvn-repo/"
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: repositoryUrl)
+            pom.version = '0.1.0'
+            pom.groupId = 'com.ms.square'
+            pom.artifactId = 'expandabletextview'
+        }
+    }
 }
