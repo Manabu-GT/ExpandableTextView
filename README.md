@@ -15,9 +15,7 @@ You just need to add the followings to your ***build.gradle*** file:
 repositories {
     maven { url 'http://Manabu-GT.github.com/ExpandableTextView/mvn-repo' }
 }
-```
 
-```
 dependencies {
     compile 'com.ms.square:expandabletextview:0.1.0'
 }
@@ -45,7 +43,8 @@ of the ExpandableTextView.
  * `collapseDrawable`
  Customize a drawable set to ImageButton to collapse the TextView
 
-```sample xml
+```
+  <!-- sample xml -->
   <com.ms.square.android.expandabletextview.ExpandableTextView
       xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
@@ -55,7 +54,6 @@ of the ExpandableTextView.
       android:orientation="vertical"
       expandableTextView:maxCollapsedLines="4"
       expandableTextView:animDuration="200">
-
       <TextView
           android:id="@id/expandable_text"
           android:layout_width="match_parent"
@@ -64,7 +62,6 @@ of the ExpandableTextView.
           android:layout_marginRight="10dp"
           android:textSize="16sp"
           android:textColor="#666666" />
-
       <ImageButton
           android:id="@id/expand_collapse"
           android:layout_width="wrap_content"
@@ -76,9 +73,8 @@ of the ExpandableTextView.
 ```
 
 License
---------
+----------
 
-```
  Copyright 2014 Manabu Shimobe
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -92,6 +88,5 @@ License
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
-```
 
 [1]: https://github.com/Manabu-GT/ExpandableTextView/tree/master/sample
