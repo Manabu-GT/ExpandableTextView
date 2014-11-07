@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#dddddd"
-    tools:context="com.ms.square.android.mymodule.app.MainActivity">
+    tools:context="com.ms.square.android.expandabletextview.sample.DemoActivity">
 
     <ScrollView
         android:id="@+id/scroll_view"

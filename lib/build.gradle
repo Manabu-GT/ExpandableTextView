@@ -1,13 +1,13 @@
 apply plugin: 'android-library'
-apply plugin: 'maven'
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion "19.0.3"
+
+    compileSdkVersion project.ANDROID_COMPILE_SDK_VERSION
+    buildToolsVersion project.ANDROID_BUILD_TOOLS_VERSION
 
     defaultConfig {
-        minSdkVersion 8
-        targetSdkVersion 19
+        minSdkVersion project.ANDROID_MIN_SDK_VERSION
+        targetSdkVersion project.ANDROID_TARGET_SDK_VERSION
     }
     buildTypes {
         release {
@@ -21,20 +21,5 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }
 
-def repositoryUrl
-if (has('repoDir')) {
-    repositoryUrl = "file://$repoDir/mvn-repo/"
-} else {
-    repositoryUrl = "file://$buildDir/mvn-repo/"
-}
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: repositoryUrl)
-            pom.version = '0.1.0'
-            pom.groupId = 'com.ms.square'
-            pom.artifactId = 'expandabletextview'
-        }
-    }
-}
+// for maven central deployment
+apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
