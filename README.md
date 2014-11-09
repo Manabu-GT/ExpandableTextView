@@ -5,7 +5,7 @@ ExpandableTextView is an Android library that allows developers to easily create
 which can expand/collapse just like the Google Play's app description.
 Feel free to use it all you want in your Android apps provided that you cite this project.
 
-<img src="https://raw.github.com/Manabu-GT/ExpandableTextView/master/art/readme_demo.gif" width=346 height=588 alt="Quick Demo">
+<img src="https://raw.github.com/Manabu-GT/ExpandableTextView/master/art/readme_demo.gif" width=346 height=549 alt="Quick Demo">
 
 Requirements
 -------------
@@ -13,21 +13,21 @@ API Level 8 (Froyo) and above.
 
 Setup
 ------
-You just need to add the followings to your ***build.gradle*** file:
+The library is pushed to Maven Central as an AAR, 
+so you just need to add the followings to your ***build.gradle*** file:
 
 ```
-repositories {
-    maven { url 'http://Manabu-GT.github.com/ExpandableTextView/mvn-repo' }
-}
 
 dependencies {
-    compile 'com.ms.square:expandabletextview:0.1.0'
+    compile 'com.ms-square:expandabletextview:0.1.1'
 }
+
 ```
 
 Usage
 ------
 Using the library is really simple, just look at the source code of the [provided sample][1].
+(Look at the SampleTextListAdapter.java for the use within a ListView)
 
 Also, you can optionally set the following attributes in your layout xml file to customize the behavior
 of the ExpandableTextView.
@@ -40,6 +40,8 @@ of the ExpandableTextView.
 
  * `animAlphaStart` (defaults to 0.7f)
  Alpha value of the TextView when the animation starts
+ (NOTE)
+ Set this value to 1 if you want to disable the alpha animation.
 
  * `expandDrawable`
  Customize a drawable set to ImageButton to expand the TextView
