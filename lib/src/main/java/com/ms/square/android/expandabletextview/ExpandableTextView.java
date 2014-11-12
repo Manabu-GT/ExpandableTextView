@@ -119,7 +119,10 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
                 applyAlphaAnimation(mTv, mAnimAlphaStart);
             }
             @Override
-            public void onAnimationEnd(Animation animation) { }
+            public void onAnimationEnd(Animation animation) {
+                // clear animation here to avoid repeated applyTransformation() calls
+                clearAnimation();
+            }
             @Override
             public void onAnimationRepeat(Animation animation) { }
         });
