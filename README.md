@@ -1,4 +1,4 @@
-ExpandableTextView
+ExpandableTextView [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-ExpandableTextView-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/1203)
 ===================
 
 ExpandableTextView is an Android library that allows developers to easily create an TextView
