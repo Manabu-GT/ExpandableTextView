@@ -16,7 +16,7 @@ Setup
 The library is pushed to Maven Central as an AAR, 
 so you just need to add the followings to your ***build.gradle*** file:
 
-```
+```groovy
 
 dependencies {
     compile 'com.ms-square:expandableTextView:0.1.2'
@@ -49,7 +49,7 @@ of the ExpandableTextView.
  * `collapseDrawable`
  Customize a drawable set to ImageButton to collapse the TextView
 
-```
+```xml
   <!-- sample xml -->
   <com.ms.square.android.expandabletextview.ExpandableTextView
       xmlns:android="http://schemas.android.com/apk/res/android"
