@@ -19,7 +19,7 @@ so you just need to add the followings to your ***build.gradle*** file:
 ```groovy
 
 dependencies {
-    compile 'com.ms-square:expandableTextView:0.1.2'
+    compile 'com.ms-square:expandableTextView:0.1.3'
 }
 
 ```
