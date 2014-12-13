@@ -25,6 +25,7 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.SparseBooleanArray;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
@@ -72,6 +73,8 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
 
     private float mAnimAlphaStart;
 
+    private boolean mAnimating;
+
     /* For saving collapsed status when used in ListView */
     private SparseBooleanArray mCollapsedStatus;
     private int mPosition;
@@ -104,6 +107,9 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
             mCollapsedStatus.put(mPosition, mCollapsed);
         }
 
+        // mark that the animation is in progress
+        mAnimating = true;
+
         Animation animation;
         if (mCollapsed) {
             animation = new ExpandCollapseAnimation(this, getHeight(), mCollapsedHeight);
@@ -122,6 +128,8 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
             public void onAnimationEnd(Animation animation) {
                 // clear animation here to avoid repeated applyTransformation() calls
                 clearAnimation();
+                // clear the animation flag
+                mAnimating = false;
             }
             @Override
             public void onAnimationRepeat(Animation animation) { }
@@ -129,6 +137,13 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
 
         clearAnimation();
         startAnimation(animation);
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        // while an animation is in progress, intercept all the touch events to children to
+        // prevent extra clicks during the animation
+        return mAnimating;
     }
 
     @Override
