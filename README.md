@@ -29,6 +29,9 @@ Usage
 Using the library is really simple, just look at the source code of the [provided sample][1].
 (Look at the SampleTextListAdapter.java for the use within a ListView)
 
+The important thing to note is that the view Ids for TextView and ImageButton must be set to
+"@id/expandable_text" and "@id/expand_collapse" respectively for this library to work.
+
 Also, you can optionally set the following attributes in your layout xml file to customize the behavior
 of the ExpandableTextView.
 
