@@ -199,49 +199,6 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         }
     }
 
-    private void init(AttributeSet attrs) {
-        TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.ExpandableTextView);
-        mMaxCollapsedLines = typedArray.getInt(R.styleable.ExpandableTextView_maxCollapsedLines, MAX_COLLAPSED_LINES);
-        mAnimationDuration = typedArray.getInt(R.styleable.ExpandableTextView_animDuration, DEFAULT_ANIM_DURATION);
-        mAnimAlphaStart = typedArray.getFloat(R.styleable.ExpandableTextView_animAlphaStart, DEFAULT_ANIM_ALPHA_START);
-        mExpandDrawable = typedArray.getDrawable(R.styleable.ExpandableTextView_expandDrawable);
-        mCollapseDrawable = typedArray.getDrawable(R.styleable.ExpandableTextView_collapseDrawable);
-
-        if (mExpandDrawable == null) {
-            mExpandDrawable = getResources().getDrawable(R.drawable.ic_expand_small_holo_light);
-        }
-        if (mCollapseDrawable == null) {
-            mCollapseDrawable = getResources().getDrawable(R.drawable.ic_collapse_small_holo_light);
-        }
-
-        typedArray.recycle();
-    }
-
-    private static boolean isPostHoneycomb() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
-    }
-
-    private void findViews() {
-        mTv = (TextView) findViewById(R.id.expandable_text);
-        mTv.setOnClickListener(this);
-        mButton = (ImageButton) findViewById(R.id.expand_collapse);
-        mButton.setImageDrawable(mCollapsed ? mExpandDrawable : mCollapseDrawable);
-        mButton.setOnClickListener(this);
-    }
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private static void applyAlphaAnimation(View view, float alpha) {
-        if (isPostHoneycomb()) {
-            view.setAlpha(alpha);
-        } else {
-            AlphaAnimation alphaAnimation = new AlphaAnimation(alpha, alpha);
-            // make it instant
-            alphaAnimation.setDuration(0);
-            alphaAnimation.setFillAfter(true);
-            view.startAnimation(alphaAnimation);
-        }
-    }
-
     public void setText(CharSequence text) {
         mRelayout = true;
         mTv.setText(text);
@@ -265,6 +222,49 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
             return "";
         }
         return mTv.getText();
+    }
+
+    private void init(AttributeSet attrs) {
+        TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.ExpandableTextView);
+        mMaxCollapsedLines = typedArray.getInt(R.styleable.ExpandableTextView_maxCollapsedLines, MAX_COLLAPSED_LINES);
+        mAnimationDuration = typedArray.getInt(R.styleable.ExpandableTextView_animDuration, DEFAULT_ANIM_DURATION);
+        mAnimAlphaStart = typedArray.getFloat(R.styleable.ExpandableTextView_animAlphaStart, DEFAULT_ANIM_ALPHA_START);
+        mExpandDrawable = typedArray.getDrawable(R.styleable.ExpandableTextView_expandDrawable);
+        mCollapseDrawable = typedArray.getDrawable(R.styleable.ExpandableTextView_collapseDrawable);
+
+        if (mExpandDrawable == null) {
+            mExpandDrawable = getResources().getDrawable(R.drawable.ic_expand_small_holo_light, null);
+        }
+        if (mCollapseDrawable == null) {
+            mCollapseDrawable = getResources().getDrawable(R.drawable.ic_collapse_small_holo_light, null);
+        }
+
+        typedArray.recycle();
+    }
+
+    private void findViews() {
+        mTv = (TextView) findViewById(R.id.expandable_text);
+        mTv.setOnClickListener(this);
+        mButton = (ImageButton) findViewById(R.id.expand_collapse);
+        mButton.setImageDrawable(mCollapsed ? mExpandDrawable : mCollapseDrawable);
+        mButton.setOnClickListener(this);
+    }
+
+    private static boolean isPostHoneycomb() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    private static void applyAlphaAnimation(View view, float alpha) {
+        if (isPostHoneycomb()) {
+            view.setAlpha(alpha);
+        } else {
+            AlphaAnimation alphaAnimation = new AlphaAnimation(alpha, alpha);
+            // make it instant
+            alphaAnimation.setDuration(0);
+            alphaAnimation.setFillAfter(true);
+            view.startAnimation(alphaAnimation);
+        }
     }
 
     private static int getRealTextViewHeight(TextView textView) {
