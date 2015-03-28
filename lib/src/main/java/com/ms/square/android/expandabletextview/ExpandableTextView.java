@@ -19,9 +19,12 @@ package com.ms.square.android.expandabletextview;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.SparseBooleanArray;
@@ -233,10 +236,10 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         mCollapseDrawable = typedArray.getDrawable(R.styleable.ExpandableTextView_collapseDrawable);
 
         if (mExpandDrawable == null) {
-            mExpandDrawable = getResources().getDrawable(R.drawable.ic_expand_small_holo_light, null);
+            mExpandDrawable = getDrawable(getResources(), R.drawable.ic_expand_small_holo_light);
         }
         if (mCollapseDrawable == null) {
-            mCollapseDrawable = getResources().getDrawable(R.drawable.ic_collapse_small_holo_light, null);
+            mCollapseDrawable = getDrawable(getResources(), R.drawable.ic_collapse_small_holo_light);
         }
 
         typedArray.recycle();
@@ -254,6 +257,10 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
     }
 
+    private static boolean isPostLolipop() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+    }
+
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private static void applyAlphaAnimation(View view, float alpha) {
         if (isPostHoneycomb()) {
@@ -267,7 +274,16 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         }
     }
 
-    private static int getRealTextViewHeight(TextView textView) {
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private static Drawable getDrawable(@NonNull Resources resources, @DrawableRes int resId) {
+        if (isPostLolipop()) {
+            return resources.getDrawable(resId, null);
+        } else {
+            return resources.getDrawable(resId);
+        }
+    }
+
+    private static int getRealTextViewHeight(@NonNull TextView textView) {
         int textHeight = textView.getLayout().getLineTop(textView.getLineCount());
         int padding = textView.getCompoundPaddingTop() + textView.getCompoundPaddingBottom();
         return textHeight + padding;
