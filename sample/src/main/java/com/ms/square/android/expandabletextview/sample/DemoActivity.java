@@ -14,8 +14,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ms.square.android.expandabletextview.ExpandableTextView;
+import com.ms.square.android.expandabletextview.OnExpandListener;
 import com.ms.square.android.mymodule.app.R;
 
 /**
@@ -154,7 +156,7 @@ public class DemoActivity extends ActionBarActivity implements ActionBar.TabList
         }
     }
 
-    public static class Demo1Fragment extends Fragment {
+    public static class Demo1Fragment extends Fragment  implements OnExpandListener{
 
         public static Demo1Fragment newInstance() {
             Demo1Fragment fragment = new Demo1Fragment();
@@ -171,13 +173,25 @@ public class DemoActivity extends ActionBarActivity implements ActionBar.TabList
 
             ExpandableTextView expTv1 = (ExpandableTextView) rootView.findViewById(R.id.sample1)
                     .findViewById(R.id.expand_text_view);
+            expTv1.setOnExpandListener(new OnExpandListener() {
+                @Override
+                public void OnExpand(boolean isExpand) {
+                    Toast.makeText(getActivity(), isExpand?"TRUE":"FALSE", Toast.LENGTH_SHORT).show();
+                }
+            });
             final ExpandableTextView expTv2 = (ExpandableTextView) rootView.findViewById(R.id.sample2)
                     .findViewById(R.id.expand_text_view);
+            expTv2.setOnExpandListener(this);
 
             expTv1.setText(getString(R.string.dummy_text1));
             expTv2.setText(getString(R.string.dummy_text2));
 
             return rootView;
+        }
+
+        @Override
+        public void OnExpand(boolean isExpand) {
+            Toast.makeText(getActivity(), isExpand?"TRUE":"FALSE", Toast.LENGTH_SHORT).show();
         }
     }
 
