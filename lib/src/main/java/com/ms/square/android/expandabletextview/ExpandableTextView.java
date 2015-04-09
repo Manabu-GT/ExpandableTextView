@@ -79,6 +79,9 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
     private SparseBooleanArray mCollapsedStatus;
     private int mPosition;
 
+    /* CallBack*/
+    private OnExpandListener mOnExpandListener = null;
+
     public ExpandableTextView(Context context) {
         super(context);
     }
@@ -100,6 +103,7 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
             return;
         }
 
+        setExpand(mCollapsed);
         mCollapsed = !mCollapsed;
         mButton.setImageDrawable(mCollapsed ? mExpandDrawable : mCollapseDrawable);
 
@@ -271,6 +275,17 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         int textHeight = textView.getLayout().getLineTop(textView.getLineCount());
         int padding = textView.getCompoundPaddingTop() + textView.getCompoundPaddingBottom();
         return textHeight + padding;
+    }
+
+    /* CallBack section*/
+    public void setOnExpandListener(OnExpandListener listener){
+        this.mOnExpandListener = listener;
+    }
+
+    private void setExpand(boolean isExpand){
+        if(this.mOnExpandListener != null){
+            this.mOnExpandListener.OnExpand(isExpand);
+        }
     }
 
     protected class ExpandCollapseAnimation extends Animation {
