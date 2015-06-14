@@ -5,7 +5,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.1.0'
+        classpath 'com.android.tools.build:gradle:1.2.3'
     }
 }
 
@@ -24,5 +24,5 @@ project.ext {
     ANDROID_TARGET_SDK_VERSION = 22
 
     // Google Stuffs
-    supportPackageVersion = "22.0.0"
+    supportPackageVersion = "22.1.0"
 }
