@@ -80,6 +80,15 @@ of the ExpandableTextView.
   </com.ms.square.android.expandabletextview.ExpandableTextView>
 ```
 
+```java
+// sample code snippet to set the text content on the ExpandableTextView
+ExpandableTextView expTv1 = (ExpandableTextView) rootView.findViewById(R.id.sample1)
+                    .findViewById(R.id.expand_text_view);
+                    
+// IMPORTANT - call setText on the ExpandableTextView to set the text content to display
+expTv1.setText(getString(R.string.dummy_text1));
+```
+
 License
 ----------
 
