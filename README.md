@@ -19,7 +19,7 @@ so you just need to add the followings to your ***build.gradle*** file:
 ```groovy
 
 dependencies {
-    compile 'com.ms-square:expandableTextView:0.1.3'
+    compile 'com.ms-square:expandableTextView:0.1.4'
 }
 
 ```
@@ -60,7 +60,6 @@ of the ExpandableTextView.
       android:id="@+id/expand_text_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:orientation="vertical"
       expandableTextView:maxCollapsedLines="4"
       expandableTextView:animDuration="200">
       <TextView
