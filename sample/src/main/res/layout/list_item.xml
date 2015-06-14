@@ -9,7 +9,6 @@
         android:id="@+id/expand_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         expandableTextView:maxCollapsedLines="4"
         expandableTextView:animAlphaStart="1">
 

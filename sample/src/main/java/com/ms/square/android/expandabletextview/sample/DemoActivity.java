@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.ms.square.android.mymodule.app.R;
@@ -171,8 +172,15 @@ public class DemoActivity extends ActionBarActivity implements ActionBar.TabList
 
             ExpandableTextView expTv1 = (ExpandableTextView) rootView.findViewById(R.id.sample1)
                     .findViewById(R.id.expand_text_view);
-            final ExpandableTextView expTv2 = (ExpandableTextView) rootView.findViewById(R.id.sample2)
+            ExpandableTextView expTv2 = (ExpandableTextView) rootView.findViewById(R.id.sample2)
                     .findViewById(R.id.expand_text_view);
+
+            expTv1.setOnExpandStateChangeListener(new ExpandableTextView.OnExpandStateChangeListener() {
+                @Override
+                public void onExpandStateChanged(TextView textView, boolean isExpanded) {
+                    Toast.makeText(getActivity(), isExpanded ? "Expanded" : "Collapsed", Toast.LENGTH_SHORT).show();
+                }
+            });
 
             expTv1.setText(getString(R.string.dummy_text1));
             expTv2.setText(getString(R.string.dummy_text2));

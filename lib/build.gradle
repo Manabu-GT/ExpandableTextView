@@ -19,6 +19,8 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    // to support annotations such as @NonNull
+    compile "com.android.support:support-annotations:${supportPackageVersion}"
 }
 
 // for maven central deployment

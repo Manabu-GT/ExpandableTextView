@@ -19,9 +19,13 @@ package com.ms.square.android.expandabletextview;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.SparseBooleanArray;
@@ -75,12 +79,15 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
 
     private boolean mAnimating;
 
+    /* Listener for callback */
+    private OnExpandStateChangeListener mListener;
+
     /* For saving collapsed status when used in ListView */
     private SparseBooleanArray mCollapsedStatus;
     private int mPosition;
 
     public ExpandableTextView(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public ExpandableTextView(Context context, AttributeSet attrs) {
@@ -92,6 +99,14 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
     public ExpandableTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(attrs);
+    }
+
+    @Override
+    public void setOrientation(int orientation){
+        if(LinearLayout.HORIZONTAL == orientation){
+            throw new IllegalArgumentException("ExpandableTextView only supports Vertical Orientation.");
+        }
+        super.setOrientation(orientation);
     }
 
     @Override
@@ -130,6 +145,11 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
                 clearAnimation();
                 // clear the animation flag
                 mAnimating = false;
+
+                // notify the listener
+                if (mListener != null) {
+                    mListener.onExpandStateChanged(mTv, !mCollapsed);
+                }
             }
             @Override
             public void onAnimationRepeat(Animation animation) { }
@@ -199,6 +219,36 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         }
     }
 
+    public void setOnExpandStateChangeListener(@Nullable OnExpandStateChangeListener listener) {
+        mListener = listener;
+    }
+
+    public void setText(@Nullable CharSequence text) {
+        mRelayout = true;
+        mTv.setText(text);
+        setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
+    }
+
+    public void setText(@Nullable CharSequence text, @NonNull SparseBooleanArray collapsedStatus, int position) {
+        mCollapsedStatus = collapsedStatus;
+        mPosition = position;
+        boolean isCollapsed = collapsedStatus.get(position, true);
+        clearAnimation();
+        mCollapsed = isCollapsed;
+        mButton.setImageDrawable(mCollapsed ? mExpandDrawable : mCollapseDrawable);
+        setText(text);
+        getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        requestLayout();
+    }
+
+    @Nullable
+    public CharSequence getText() {
+        if (mTv == null) {
+            return "";
+        }
+        return mTv.getText();
+    }
+
     private void init(AttributeSet attrs) {
         TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.ExpandableTextView);
         mMaxCollapsedLines = typedArray.getInt(R.styleable.ExpandableTextView_maxCollapsedLines, MAX_COLLAPSED_LINES);
@@ -208,17 +258,19 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         mCollapseDrawable = typedArray.getDrawable(R.styleable.ExpandableTextView_collapseDrawable);
 
         if (mExpandDrawable == null) {
-            mExpandDrawable = getResources().getDrawable(R.drawable.ic_expand_small_holo_light);
+            mExpandDrawable = getDrawable(getContext(), R.drawable.ic_expand_small_holo_light);
         }
         if (mCollapseDrawable == null) {
-            mCollapseDrawable = getResources().getDrawable(R.drawable.ic_collapse_small_holo_light);
+            mCollapseDrawable = getDrawable(getContext(), R.drawable.ic_collapse_small_holo_light);
         }
 
         typedArray.recycle();
-    }
 
-    private static boolean isPostHoneycomb() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
+        // enforces vertical orientation
+        setOrientation(LinearLayout.VERTICAL);
+
+        // default visibility is gone
+        setVisibility(GONE);
     }
 
     private void findViews() {
@@ -227,6 +279,14 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         mButton = (ImageButton) findViewById(R.id.expand_collapse);
         mButton.setImageDrawable(mCollapsed ? mExpandDrawable : mCollapseDrawable);
         mButton.setOnClickListener(this);
+    }
+
+    private static boolean isPostHoneycomb() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
+    }
+
+    private static boolean isPostLolipop() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -242,38 +302,23 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         }
     }
 
-    public void setText(CharSequence text) {
-        mRelayout = true;
-        mTv.setText(text);
-        setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
-    }
-
-    public void setText(CharSequence text, SparseBooleanArray collapsedStatus, int position) {
-        mCollapsedStatus = collapsedStatus;
-        mPosition = position;
-        boolean isCollapsed = collapsedStatus.get(position, true);
-        clearAnimation();
-        mCollapsed = isCollapsed;
-        mButton.setImageDrawable(mCollapsed ? mExpandDrawable : mCollapseDrawable);
-        setText(text);
-        getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
-        requestLayout();
-    }
-
-    public CharSequence getText() {
-        if (mTv == null) {
-            return "";
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private static Drawable getDrawable(@NonNull Context context, @DrawableRes int resId) {
+        Resources resources = context.getResources();
+        if (isPostLolipop()) {
+            return resources.getDrawable(resId, context.getTheme());
+        } else {
+            return resources.getDrawable(resId);
         }
-        return mTv.getText();
     }
 
-    private static int getRealTextViewHeight(TextView textView) {
+    private static int getRealTextViewHeight(@NonNull TextView textView) {
         int textHeight = textView.getLayout().getLineTop(textView.getLineCount());
         int padding = textView.getCompoundPaddingTop() + textView.getCompoundPaddingBottom();
         return textHeight + padding;
     }
 
-    protected class ExpandCollapseAnimation extends Animation {
+    class ExpandCollapseAnimation extends Animation {
         private final View mTargetView;
         private final int mStartHeight;
         private final int mEndHeight;
@@ -306,4 +351,14 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
             return true;
         }
     };
+
+    public interface OnExpandStateChangeListener {
+        /**
+         * Called when the expand/collapse animation has been finished
+         *
+         * @param textView - TextView being expanded/collapsed
+         * @param isExpanded - true if the TextView has been expanded
+         */
+        void onExpandStateChanged(TextView textView, boolean isExpanded);
+    }
 }
