@@ -36,11 +36,11 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
-public class ExpandableTextView extends LinearLayout implements View.OnClickListener {
+public class ExpandableTextView extends RelativeLayout implements View.OnClickListener {
 
     private static final String TAG = ExpandableTextView.class.getSimpleName();
 
@@ -99,14 +99,6 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
     public ExpandableTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(attrs);
-    }
-
-    @Override
-    public void setOrientation(int orientation){
-        if(LinearLayout.HORIZONTAL == orientation){
-            throw new IllegalArgumentException("ExpandableTextView only supports Vertical Orientation.");
-        }
-        super.setOrientation(orientation);
     }
 
     @Override
@@ -241,6 +233,28 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         requestLayout();
     }
 
+    /**
+     * reset content view with height warp_content
+     * @param text
+     */
+    public void resetContentView(@Nullable CharSequence text) {
+        resetContentView(text, ViewGroup.LayoutParams.WRAP_CONTENT);
+    }
+
+    /**
+     * reset content view with height
+     * @param text
+     * @param height
+     */
+    public void resetContentView(@Nullable CharSequence text, int height) {
+        clearAnimation();
+        mCollapsed = true;
+        mButton.setImageDrawable(mCollapsed ? mExpandDrawable : mCollapseDrawable);
+        setText(text);
+        getLayoutParams().height = height;
+        requestLayout();
+    }
+
     @Nullable
     public CharSequence getText() {
         if (mTv == null) {
@@ -265,9 +279,6 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         }
 
         typedArray.recycle();
-
-        // enforces vertical orientation
-        setOrientation(LinearLayout.VERTICAL);
 
         // default visibility is gone
         setVisibility(GONE);
