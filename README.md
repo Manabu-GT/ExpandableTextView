@@ -74,7 +74,7 @@ of the ExpandableTextView.
           android:id="@id/expand_collapse"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_margin="16dp"
+          android:padding="10dp"
           android:layout_gravity="right|bottom"
           android:background="@android:color/transparent"/>
   </com.ms.square.android.expandabletextview.ExpandableTextView>
