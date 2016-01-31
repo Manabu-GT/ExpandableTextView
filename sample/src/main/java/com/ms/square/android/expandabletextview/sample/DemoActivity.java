@@ -25,7 +25,8 @@ import com.ms.square.android.mymodule.app.R;
  * @author Manabu-GT
  */
 public class DemoActivity extends AppCompatActivity {
-    public static String POSITION = "POSITION";
+
+    private static final String POSITION = "POSITION";
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -35,20 +36,19 @@ public class DemoActivity extends AppCompatActivity {
      * may be best to switch to a
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
-    SectionsPagerAdapter mSectionsPagerAdapter;
+    private SectionsPagerAdapter mSectionsPagerAdapter;
 
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-    ViewPager mViewPager;
+    private ViewPager mViewPager;
 
-    TabLayout mTabLayout;
+    private TabLayout mTabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_demo);
-
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -58,9 +58,6 @@ public class DemoActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        // When swiping between different sections, select the corresponding
-        // tab. We can also use ActionBar.Tab#select() to do this if we have
-        // a reference to the Tab.
         mTabLayout = (TabLayout) findViewById(R.id.tabs);
         mTabLayout.setupWithViewPager(mViewPager);
         setupTabLayout(mTabLayout);
@@ -86,7 +83,7 @@ public class DemoActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void setupTabLayout(TabLayout tabLayout) {
+    private void setupTabLayout(TabLayout tabLayout) {
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setupWithViewPager(mViewPager);
@@ -104,12 +101,11 @@ public class DemoActivity extends AppCompatActivity {
         mViewPager.setCurrentItem(savedInstanceState.getInt(POSITION));
     }
 
-
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -142,7 +138,6 @@ public class DemoActivity extends AppCompatActivity {
     }
 
     public static class Demo1Fragment extends Fragment {
-
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
@@ -171,7 +166,6 @@ public class DemoActivity extends AppCompatActivity {
     }
 
     public static class Demo2Fragment extends ListFragment {
-
         @Override
         public void onViewCreated(View view, Bundle savedInstanceState) {
             super.onViewCreated(view, savedInstanceState);
