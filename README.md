@@ -5,7 +5,7 @@ ExpandableTextView is an Android library that allows developers to easily create
 which can expand/collapse just like the Google Play's app description.
 Feel free to use it all you want in your Android apps provided that you cite this project.
 
-<img src="https://raw.github.com/Manabu-GT/ExpandableTextView/master/art/readme_demo.gif" width=346 height=549 alt="Quick Demo">
+<img src="/art/readme_demo.gif?raw=true" width=360 height=640 alt="Quick Demo">
 
 Requirements
 -------------
@@ -74,7 +74,7 @@ of the ExpandableTextView.
           android:id="@id/expand_collapse"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_margin="16dp"
+          android:padding="16dp"
           android:layout_gravity="right|bottom"
           android:background="@android:color/transparent"/>
   </com.ms.square.android.expandabletextview.ExpandableTextView>

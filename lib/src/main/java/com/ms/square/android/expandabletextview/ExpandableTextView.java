@@ -258,10 +258,10 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         mCollapseDrawable = typedArray.getDrawable(R.styleable.ExpandableTextView_collapseDrawable);
 
         if (mExpandDrawable == null) {
-            mExpandDrawable = getDrawable(getContext(), R.drawable.ic_expand_small_holo_light);
+            mExpandDrawable = getDrawable(getContext(), R.drawable.ic_expand_more_black_12dp);
         }
         if (mCollapseDrawable == null) {
-            mCollapseDrawable = getDrawable(getContext(), R.drawable.ic_collapse_small_holo_light);
+            mCollapseDrawable = getDrawable(getContext(), R.drawable.ic_expand_less_black_12dp);
         }
 
         typedArray.recycle();
@@ -350,7 +350,7 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         public boolean willChangeBounds( ) {
             return true;
         }
-    };
+    }
 
     public interface OnExpandStateChangeListener {
         /**
