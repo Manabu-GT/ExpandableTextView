@@ -10,5 +10,7 @@
             <enum name="ImageButton" value="0"/>
             <enum name="TextView" value="1"/>
         </attr>
+        <attr name="expandableTextId" format="reference"/>
+        <attr name="expandCollapseToggleId" format="reference"/>
     </declare-styleable>
 </resources>

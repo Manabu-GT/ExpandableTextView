@@ -24,6 +24,7 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -82,6 +83,12 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
     private float mAnimAlphaStart;
 
     private boolean mAnimating;
+
+    @IdRes
+    private int mExpandableTextId = R.id.expandable_text;
+
+    @IdRes
+    private int mExpandCollapseToggleId = R.id.expand_collapse;
 
     /* Listener for callback */
     private OnExpandStateChangeListener mListener;
@@ -259,6 +266,8 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         mMaxCollapsedLines = typedArray.getInt(R.styleable.ExpandableTextView_maxCollapsedLines, MAX_COLLAPSED_LINES);
         mAnimationDuration = typedArray.getInt(R.styleable.ExpandableTextView_animDuration, DEFAULT_ANIM_DURATION);
         mAnimAlphaStart = typedArray.getFloat(R.styleable.ExpandableTextView_animAlphaStart, DEFAULT_ANIM_ALPHA_START);
+        mExpandableTextId = typedArray.getResourceId(R.styleable.ExpandableTextView_expandableTextId, R.id.expandable_text);
+        mExpandCollapseToggleId = typedArray.getResourceId(R.styleable.ExpandableTextView_expandCollapseToggleId, R.id.expand_collapse);
 
         mExpandIndicatorController = setupExpandToggleController(getContext(), typedArray);
 
@@ -272,9 +281,9 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
     }
 
     private void findViews() {
-        mTv = (TextView) findViewById(R.id.expandable_text);
+        mTv = (TextView) findViewById(mExpandableTextId);
         mTv.setOnClickListener(this);
-        mToggleView = findViewById(R.id.expand_collapse);
+        mToggleView = findViewById(mExpandCollapseToggleId);
         mExpandIndicatorController.setView(mToggleView);
         mExpandIndicatorController.changeState(mCollapsed);
         mToggleView.setOnClickListener(this);
