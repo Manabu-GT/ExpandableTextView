@@ -239,6 +239,9 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         mRelayout = true;
         mTv.setText(text);
         setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
+        clearAnimation();
+        getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        requestLayout();
     }
 
     public void setText(@Nullable CharSequence text, @NonNull SparseBooleanArray collapsedStatus, int position) {
@@ -249,8 +252,6 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         mCollapsed = isCollapsed;
         mExpandIndicatorController.changeState(mCollapsed);
         setText(text);
-        getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
-        requestLayout();
     }
 
     @Nullable
