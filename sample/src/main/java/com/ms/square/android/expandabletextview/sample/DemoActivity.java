@@ -115,14 +115,17 @@ public class DemoActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             if (position == 0) {
                 return new Demo1Fragment();
-            } else {
+            } else if(position == 1) {
                 return new Demo2Fragment();
+            } else if(position == 2) {
+                return new Demo3Fragment();
             }
+            throw new IllegalArgumentException("Can't get Fragment with " + position + " position");
         }
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
 
         @Override
@@ -132,6 +135,8 @@ public class DemoActivity extends AppCompatActivity {
                     return getString(R.string.title_demo1);
                 case 1:
                     return getString(R.string.title_demo2);
+                case 2:
+                    return getString(R.string.title_demo3);
             }
             return null;
         }
@@ -165,12 +170,42 @@ public class DemoActivity extends AppCompatActivity {
         }
     }
 
+
     public static class Demo2Fragment extends ListFragment {
         @Override
         public void onViewCreated(View view, Bundle savedInstanceState) {
             super.onViewCreated(view, savedInstanceState);
             SampleTextListAdapter adapter = new SampleTextListAdapter(getActivity());
             setListAdapter(adapter);
+        }
+    }
+
+    public static class Demo3Fragment extends Fragment {
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_demo3, container, false);
+
+            ((TextView) rootView.findViewById(R.id.sample1).findViewById(R.id.title)).setText("Sample 1");
+            ((TextView) rootView.findViewById(R.id.sample2).findViewById(R.id.title)).setText("Sample 2");
+
+            CustomExpandableTextView expTv1 = (CustomExpandableTextView) rootView.findViewById(R.id.sample1)
+                    .findViewById(R.id.expand_text_view);
+            CustomExpandableTextView expTv2 = (CustomExpandableTextView) rootView.findViewById(R.id.sample2)
+                    .findViewById(R.id.expand_text_view);
+
+            expTv1.setOnExpandStateChangeListener(new CustomExpandableTextView.OnExpandStateChangeListener() {
+                @Override
+                public void onExpandStateChanged(TextView textView, boolean isExpanded) {
+                    Toast.makeText(getActivity(), isExpanded ? "Expanded" : "Collapsed", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            expTv1.setText(getString(R.string.dummy_text1));
+            expTv2.setText(getString(R.string.dummy_text2));
+
+            return rootView;
         }
     }
 }
