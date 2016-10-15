@@ -90,6 +90,8 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
     @IdRes
     private int mExpandCollapseToggleId = R.id.expand_collapse;
 
+    private boolean mExpandToggleOnTextClick;
+
     /* Listener for callback */
     private OnExpandStateChangeListener mListener;
 
@@ -269,6 +271,7 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         mAnimAlphaStart = typedArray.getFloat(R.styleable.ExpandableTextView_animAlphaStart, DEFAULT_ANIM_ALPHA_START);
         mExpandableTextId = typedArray.getResourceId(R.styleable.ExpandableTextView_expandableTextId, R.id.expandable_text);
         mExpandCollapseToggleId = typedArray.getResourceId(R.styleable.ExpandableTextView_expandCollapseToggleId, R.id.expand_collapse);
+        mExpandToggleOnTextClick = typedArray.getBoolean(R.styleable.ExpandableTextView_expandToggleOnTextClick, true);
 
         mExpandIndicatorController = setupExpandToggleController(getContext(), typedArray);
 
@@ -283,7 +286,11 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
 
     private void findViews() {
         mTv = (TextView) findViewById(mExpandableTextId);
-        mTv.setOnClickListener(this);
+        if (mExpandToggleOnTextClick) {
+            mTv.setOnClickListener(this);
+        } else {
+            mTv.setOnClickListener(null);
+        }
         mToggleView = findViewById(mExpandCollapseToggleId);
         mExpandIndicatorController.setView(mToggleView);
         mExpandIndicatorController.changeState(mCollapsed);

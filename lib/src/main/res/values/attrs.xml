@@ -12,5 +12,6 @@
         </attr>
         <attr name="expandableTextId" format="reference"/>
         <attr name="expandCollapseToggleId" format="reference"/>
+        <attr name="expandToggleOnTextClick" format="boolean"/>
     </declare-styleable>
 </resources>
