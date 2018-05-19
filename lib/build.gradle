@@ -1,4 +1,4 @@
-apply plugin: 'android-library'
+apply plugin: 'com.android.library'
 
 android {
 
@@ -18,9 +18,9 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
     // to support annotations such as @NonNull
-    compile "com.android.support:support-annotations:${supportPackageVersion}"
+    implementation "com.android.support:support-annotations:${supportPackageVersion}"
 }
 
 // for maven central deployment

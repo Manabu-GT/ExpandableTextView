@@ -6,5 +6,6 @@
         <attr name="animAlphaStart" format="float"/>
         <attr name="expandDrawable" format="reference"/>
         <attr name="collapseDrawable" format="reference"/>
+        <attr name="ellipsize" format="boolean"/>
     </declare-styleable>
 </resources>

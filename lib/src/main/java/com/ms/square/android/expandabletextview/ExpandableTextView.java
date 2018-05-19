@@ -47,6 +47,9 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
     /* The default number of lines */
     private static final int MAX_COLLAPSED_LINES = 8;
 
+    /* The default ellipsize */
+    private static final boolean DEFAULT_ELLIPSIZE = false;
+
     /* The default animation duration */
     private static final int DEFAULT_ANIM_DURATION = 300;
 
@@ -78,6 +81,8 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
     private float mAnimAlphaStart;
 
     private boolean mAnimating;
+
+    private boolean mEllipsize;
 
     /* Listener for callback */
     private OnExpandStateChangeListener mListener;
@@ -146,6 +151,10 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
                 // clear the animation flag
                 mAnimating = false;
 
+                if (mCollapsed) {
+                    mTv.setMaxLines(mMaxCollapsedLines);
+                    mTv.setEllipsize(mEllipsize ? TextUtils.TruncateAt.END : null);
+                }
                 // notify the listener
                 if (mListener != null) {
                     mListener.onExpandStateChanged(mTv, !mCollapsed);
@@ -168,6 +177,7 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
 
     @Override
     protected void onFinishInflate() {
+        super.onFinishInflate();
         findViews();
     }
 
@@ -256,6 +266,7 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         mAnimAlphaStart = typedArray.getFloat(R.styleable.ExpandableTextView_animAlphaStart, DEFAULT_ANIM_ALPHA_START);
         mExpandDrawable = typedArray.getDrawable(R.styleable.ExpandableTextView_expandDrawable);
         mCollapseDrawable = typedArray.getDrawable(R.styleable.ExpandableTextView_collapseDrawable);
+        mEllipsize = typedArray.getBoolean(R.styleable.ExpandableTextView_ellipsize, DEFAULT_ELLIPSIZE);
 
         if (mExpandDrawable == null) {
             mExpandDrawable = getDrawable(getContext(), R.drawable.ic_expand_more_black_12dp);
@@ -275,6 +286,7 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
 
     private void findViews() {
         mTv = (TextView) findViewById(R.id.expandable_text);
+        mTv.setEllipsize(mEllipsize ? TextUtils.TruncateAt.END : null);
         mTv.setOnClickListener(this);
         mButton = (ImageButton) findViewById(R.id.expand_collapse);
         mButton.setImageDrawable(mCollapsed ? mExpandDrawable : mCollapseDrawable);
