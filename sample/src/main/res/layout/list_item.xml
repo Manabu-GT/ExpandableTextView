@@ -10,7 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         expandableTextView:animAlphaStart="1"
-        expandableTextView:maxCollapsedLines="4">
+        expandableTextView:maxCollapsedLines="4"
+        expandableTextView:ellipsize="true">
 
         <TextView
             android:id="@id/expandable_text"
