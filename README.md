@@ -37,6 +37,9 @@ of the ExpandableTextView.
 
  * `maxCollapsedLines` (defaults to 8)
  The maximum number of text lines allowed to be shown when the TextView gets collapsed
+ 
+  * `ellipsize ` (defaults false)
+  Ellipsize to shorten text using an ellipsis, i.e. three dots when the TextView gets collapsed
 
  * `animDuration` (defaults to 300ms)
  Duration of the Animation for the expansion/collapse
