@@ -1,4 +1,4 @@
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 
 android {
 
@@ -21,8 +21,8 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(':lib')
-    compile "com.android.support:appcompat-v7:${supportPackageVersion}"
-    compile "com.android.support:design:${supportPackageVersion}"
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':lib')
+    implementation "com.android.support:appcompat-v7:${supportPackageVersion}"
+    implementation "com.android.support:design:${supportPackageVersion}"
 }

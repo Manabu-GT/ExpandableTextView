@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -115,14 +116,16 @@ public class DemoActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             if (position == 0) {
                 return new Demo1Fragment();
-            } else {
+            } else if (position == 1) {
                 return new Demo2Fragment();
+            } else {
+                return new Demo3Fragment();
             }
         }
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
 
         @Override
@@ -132,6 +135,8 @@ public class DemoActivity extends AppCompatActivity {
                     return getString(R.string.title_demo1);
                 case 1:
                     return getString(R.string.title_demo2);
+                case 2:
+                    return getString(R.string.title_demo3);
             }
             return null;
         }
@@ -171,6 +176,19 @@ public class DemoActivity extends AppCompatActivity {
             super.onViewCreated(view, savedInstanceState);
             SampleTextListAdapter adapter = new SampleTextListAdapter(getActivity());
             setListAdapter(adapter);
+        }
+    }
+
+    public static class Demo3Fragment extends Fragment {
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_demo3, container, false);
+
+            RecyclerView recyclerView = rootView.findViewById(R.id.recycler_view);
+            recyclerView.setAdapter(new SampleRecyclerViewAdapter(getActivity()));
+
+            return rootView;
         }
     }
 }
