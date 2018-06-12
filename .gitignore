@@ -10,6 +10,7 @@ build/
 .idea/*.xml
 .idea/.name
 .idea/copyright/
+.idea/codeStyles
 .idea/libraries/
 .idea/scopes/
 .idea/inspectionProfiles/

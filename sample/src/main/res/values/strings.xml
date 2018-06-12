@@ -8,5 +8,6 @@
     <string name="title_activity_demo">Demo</string>
     <string name="title_demo1">In ScrollView</string>
     <string name="title_demo2">In ListView</string>
+    <string name="title_demo3">In RecyclerView</string>
 
 </resources>

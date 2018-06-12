@@ -57,9 +57,9 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
 
     protected ImageButton mButton; // Button to expand/collapse
 
-    private boolean mRelayout;
-
     private boolean mCollapsed = true; // Show short version as default.
+
+    private boolean mSkipMeasure = false;
 
     private int mCollapsedHeight;
 
@@ -174,11 +174,11 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         // If no change, measure and return
-        if (!mRelayout || getVisibility() == View.GONE) {
+        if (mSkipMeasure || mAnimating || getVisibility() == View.GONE) {
+            mSkipMeasure = false;
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
             return;
         }
-        mRelayout = false;
 
         // Setup with optimistic case
         // i.e. Everything fits. No button needed
@@ -190,6 +190,7 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
 
         // If the text fits in collapsed mode, we are done.
         if (mTv.getLineCount() <= mMaxCollapsedLines) {
+            mSkipMeasure = true;
             return;
         }
 
@@ -224,7 +225,6 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
     }
 
     public void setText(@Nullable CharSequence text) {
-        mRelayout = true;
         mTv.setText(text);
         setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
     }
