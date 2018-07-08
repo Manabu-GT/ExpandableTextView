@@ -24,6 +24,7 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -44,6 +45,12 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
 
     private static final String TAG = ExpandableTextView.class.getSimpleName();
 
+    private static final int EXPAND_INDICATOR_IMAGE_BUTTON = 0;
+
+    private static final int EXPAND_INDICATOR_TEXT_VIEW = 1;
+
+    private static final int DEFAULT_TOGGLE_TYPE = EXPAND_INDICATOR_IMAGE_BUTTON;
+
     /* The default number of lines */
     private static final int MAX_COLLAPSED_LINES = 8;
 
@@ -55,7 +62,7 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
 
     protected TextView mTv;
 
-    protected ImageButton mButton; // Button to expand/collapse
+    protected View mToggleView; // View to expand/collapse
 
     private boolean mRelayout;
 
@@ -69,15 +76,21 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
 
     private int mMarginBetweenTxtAndBottom;
 
-    private Drawable mExpandDrawable;
-
-    private Drawable mCollapseDrawable;
+    private ExpandIndicatorController mExpandIndicatorController;
 
     private int mAnimationDuration;
 
     private float mAnimAlphaStart;
 
     private boolean mAnimating;
+
+    @IdRes
+    private int mExpandableTextId = R.id.expandable_text;
+
+    @IdRes
+    private int mExpandCollapseToggleId = R.id.expand_collapse;
+
+    private boolean mExpandToggleOnTextClick;
 
     /* Listener for callback */
     private OnExpandStateChangeListener mListener;
@@ -111,12 +124,12 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
 
     @Override
     public void onClick(View view) {
-        if (mButton.getVisibility() != View.VISIBLE) {
+        if (mToggleView.getVisibility() != View.VISIBLE) {
             return;
         }
 
         mCollapsed = !mCollapsed;
-        mButton.setImageDrawable(mCollapsed ? mExpandDrawable : mCollapseDrawable);
+        mExpandIndicatorController.changeState(mCollapsed);
 
         if (mCollapsedStatus != null) {
             mCollapsedStatus.put(mPosition, mCollapsed);
@@ -168,6 +181,7 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
 
     @Override
     protected void onFinishInflate() {
+        super.onFinishInflate();
         findViews();
     }
 
@@ -182,7 +196,7 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
 
         // Setup with optimistic case
         // i.e. Everything fits. No button needed
-        mButton.setVisibility(View.GONE);
+        mToggleView.setVisibility(View.GONE);
         mTv.setMaxLines(Integer.MAX_VALUE);
 
         // Measure
@@ -201,7 +215,7 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         if (mCollapsed) {
             mTv.setMaxLines(mMaxCollapsedLines);
         }
-        mButton.setVisibility(View.VISIBLE);
+        mToggleView.setVisibility(View.VISIBLE);
 
         // Re-measure with new setup
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -227,6 +241,9 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         mRelayout = true;
         mTv.setText(text);
         setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
+        clearAnimation();
+        getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        requestLayout();
     }
 
     public void setText(@Nullable CharSequence text, @NonNull SparseBooleanArray collapsedStatus, int position) {
@@ -235,10 +252,8 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         boolean isCollapsed = collapsedStatus.get(position, true);
         clearAnimation();
         mCollapsed = isCollapsed;
-        mButton.setImageDrawable(mCollapsed ? mExpandDrawable : mCollapseDrawable);
+        mExpandIndicatorController.changeState(mCollapsed);
         setText(text);
-        getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
-        requestLayout();
     }
 
     @Nullable
@@ -254,15 +269,11 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         mMaxCollapsedLines = typedArray.getInt(R.styleable.ExpandableTextView_maxCollapsedLines, MAX_COLLAPSED_LINES);
         mAnimationDuration = typedArray.getInt(R.styleable.ExpandableTextView_animDuration, DEFAULT_ANIM_DURATION);
         mAnimAlphaStart = typedArray.getFloat(R.styleable.ExpandableTextView_animAlphaStart, DEFAULT_ANIM_ALPHA_START);
-        mExpandDrawable = typedArray.getDrawable(R.styleable.ExpandableTextView_expandDrawable);
-        mCollapseDrawable = typedArray.getDrawable(R.styleable.ExpandableTextView_collapseDrawable);
+        mExpandableTextId = typedArray.getResourceId(R.styleable.ExpandableTextView_expandableTextId, R.id.expandable_text);
+        mExpandCollapseToggleId = typedArray.getResourceId(R.styleable.ExpandableTextView_expandCollapseToggleId, R.id.expand_collapse);
+        mExpandToggleOnTextClick = typedArray.getBoolean(R.styleable.ExpandableTextView_expandToggleOnTextClick, true);
 
-        if (mExpandDrawable == null) {
-            mExpandDrawable = getDrawable(getContext(), R.drawable.ic_expand_more_black_12dp);
-        }
-        if (mCollapseDrawable == null) {
-            mCollapseDrawable = getDrawable(getContext(), R.drawable.ic_expand_less_black_12dp);
-        }
+        mExpandIndicatorController = setupExpandToggleController(getContext(), typedArray);
 
         typedArray.recycle();
 
@@ -274,11 +285,16 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
     }
 
     private void findViews() {
-        mTv = (TextView) findViewById(R.id.expandable_text);
-        mTv.setOnClickListener(this);
-        mButton = (ImageButton) findViewById(R.id.expand_collapse);
-        mButton.setImageDrawable(mCollapsed ? mExpandDrawable : mCollapseDrawable);
-        mButton.setOnClickListener(this);
+        mTv = (TextView) findViewById(mExpandableTextId);
+        if (mExpandToggleOnTextClick) {
+            mTv.setOnClickListener(this);
+        } else {
+            mTv.setOnClickListener(null);
+        }
+        mToggleView = findViewById(mExpandCollapseToggleId);
+        mExpandIndicatorController.setView(mToggleView);
+        mExpandIndicatorController.changeState(mCollapsed);
+        mToggleView.setOnClickListener(this);
     }
 
     private static boolean isPostHoneycomb() {
@@ -316,6 +332,34 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         int textHeight = textView.getLayout().getLineTop(textView.getLineCount());
         int padding = textView.getCompoundPaddingTop() + textView.getCompoundPaddingBottom();
         return textHeight + padding;
+    }
+
+    private static ExpandIndicatorController setupExpandToggleController(@NonNull Context context, TypedArray typedArray) {
+        final int expandToggleType = typedArray.getInt(R.styleable.ExpandableTextView_expandToggleType, DEFAULT_TOGGLE_TYPE);
+        final ExpandIndicatorController expandIndicatorController;
+        switch (expandToggleType) {
+            case EXPAND_INDICATOR_IMAGE_BUTTON:
+                Drawable expandDrawable = typedArray.getDrawable(R.styleable.ExpandableTextView_expandIndicator);
+                Drawable collapseDrawable = typedArray.getDrawable(R.styleable.ExpandableTextView_collapseIndicator);
+
+                if (expandDrawable == null) {
+                    expandDrawable = getDrawable(context, R.drawable.ic_expand_more_black_12dp);
+                }
+                if (collapseDrawable == null) {
+                    collapseDrawable = getDrawable(context, R.drawable.ic_expand_less_black_12dp);
+                }
+                expandIndicatorController = new ImageButtonExpandController(expandDrawable, collapseDrawable);
+                break;
+            case EXPAND_INDICATOR_TEXT_VIEW:
+                String expandText = typedArray.getString(R.styleable.ExpandableTextView_expandIndicator);
+                String collapseText = typedArray.getString(R.styleable.ExpandableTextView_collapseIndicator);
+                expandIndicatorController = new TextViewExpandController(expandText, collapseText);
+                break;
+            default:
+                throw new IllegalStateException("Must be of enum: ExpandableTextView_expandToggleType, one of EXPAND_INDICATOR_IMAGE_BUTTON or EXPAND_INDICATOR_TEXT_VIEW.");
+        }
+
+        return expandIndicatorController;
     }
 
     class ExpandCollapseAnimation extends Animation {
@@ -360,5 +404,57 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
          * @param isExpanded - true if the TextView has been expanded
          */
         void onExpandStateChanged(TextView textView, boolean isExpanded);
+    }
+
+    interface ExpandIndicatorController {
+        void changeState(boolean collapsed);
+
+        void setView(View toggleView);
+    }
+
+    static class ImageButtonExpandController implements ExpandIndicatorController {
+
+        private final Drawable mExpandDrawable;
+        private final Drawable mCollapseDrawable;
+
+        private ImageButton mImageButton;
+
+        public ImageButtonExpandController(Drawable expandDrawable, Drawable collapseDrawable) {
+            mExpandDrawable = expandDrawable;
+            mCollapseDrawable = collapseDrawable;
+        }
+
+        @Override
+        public void changeState(boolean collapsed) {
+            mImageButton.setImageDrawable(collapsed ? mExpandDrawable : mCollapseDrawable);
+        }
+
+        @Override
+        public void setView(View toggleView) {
+            mImageButton = (ImageButton) toggleView;
+        }
+    }
+
+    static class TextViewExpandController implements ExpandIndicatorController {
+
+        private final String mExpandText;
+        private final String mCollapseText;
+
+        private TextView mTextView;
+
+        public TextViewExpandController(String expandText, String collapseText) {
+            mExpandText = expandText;
+            mCollapseText = collapseText;
+        }
+
+        @Override
+        public void changeState(boolean collapsed) {
+            mTextView.setText(collapsed ? mExpandText : mCollapseText);
+        }
+
+        @Override
+        public void setView(View toggleView) {
+            mTextView = (TextView) toggleView;
+        }
     }
 }
