@@ -207,9 +207,6 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
             return;
         }
 
-        // Saves the text height w/ max lines
-        mTextHeightWithMaxLines = getRealTextViewHeight(mTv);
-
         // Doesn't fit in collapsed mode. Collapse text view as needed. Show
         // button.
         if (mCollapsed) {
@@ -220,6 +217,9 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         // Re-measure with new setup
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
+        // Saves the text height w/ max lines
+        mTextHeightWithMaxLines = getRealTextViewHeight(mTv);
+        
         if (mCollapsed) {
             // Gets the margin between the TextView's bottom and the ViewGroup's bottom
             mTv.post(new Runnable() {
