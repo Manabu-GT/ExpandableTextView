@@ -1,3 +1,49 @@
+# ⚠️ [DEPRECATED] ExpandableTextView
+
+> **This library is no longer maintained.**
+> It was designed for the legacy Android View system. For modern Android development, please use **Jetpack Compose**.
+
+---
+
+### Migration to Jetpack Compose
+
+In Jetpack Compose, you do not need a library to achieve this effect. You can implement expandable text with a simple Composable like this:
+
+```kotlin
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.clickable
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.style.TextOverflow
+
+@Composable
+fun ExpandableText(
+    text: String,
+    modifier: Modifier = Modifier,
+    minimizedMaxLines: Int = 3,
+) {
+    var isExpanded by remember { mutableStateOf(false) }
+    val textLayoutResult = remember { mutableStateOf<TextLayoutResult?>(null) }
+    val isClickable = isExpanded || (textLayoutResult.value?.hasVisualOverflow == true)
+
+    Text(
+        text = text,
+        maxLines = if (isExpanded) Int.MAX_VALUE else minimizedMaxLines,
+        overflow = TextOverflow.Ellipsis,
+        onTextLayout = { textLayoutResult.value = it },
+        modifier = modifier
+            .clickable(enabled = isClickable) { isExpanded = !isExpanded }
+            .animateContentSize()
+    )
+}
+```
+
 ExpandableTextView [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-ExpandableTextView-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/1203)
 ===================
 
