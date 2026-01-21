@@ -221,15 +221,10 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
         if (mCollapsed) {
-            // Gets the margin between the TextView's bottom and the ViewGroup's bottom
-            mTv.post(new Runnable() {
-                @Override
-                public void run() {
-                    mMarginBetweenTxtAndBottom = getHeight() - mTv.getHeight();
-                }
-            });
             // Saves the collapsed height of this ViewGroup
             mCollapsedHeight = getMeasuredHeight();
+            // Gets the margin between the TextView's bottom and the ViewGroup's bottom
+            mMarginBetweenTxtAndBottom = mCollapsedHeight - mTv.getMeasuredHeight();
         }
     }
 
